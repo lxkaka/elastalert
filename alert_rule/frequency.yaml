@@ -1,0 +1,63 @@
+# Alert when the rate of events exceeds a threshold
+
+# (Optional)
+# Elasticsearch host
+es_host: localhost
+
+# (Optional)
+# Elasticsearch port
+es_port: 9200
+# (OptionaL) Connect with SSL to Elasticsearch
+#use_ssl: True
+
+# (Optional) basic-auth username and password for Elasticsearch
+#es_username: someusername
+#es_password: somepassword
+
+# (Required)
+# Rule name, must be unique
+name: test frequency rule
+
+# (Required)
+# Type of alert.
+# the frequency rule type alerts when num_events events occur with timeframe time
+type: frequency
+
+# (Required)
+# Index to search, wildcard supported
+index: new-access
+
+# (Required, frequency specific)
+# Alert when this many documents matching the query occur within a timeframe
+num_events: 500
+
+# (Required, frequency specific)
+# num_events must occur within this amount of time to trigger an alert
+timeframe:
+  minutes: 5
+
+use_count_query: true
+doc_type: doc
+# (Required)
+# A list of Elasticsearch filters used for find events
+# These filters are joined with AND and nested in a filtered query
+# For more info: http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl.html
+filter:
+- term:
+    status_code: "404"
+
+# (Required)
+# The alert is use when a match is found
+alert:
+- "email"
+- "post"
+#http_post_url: https://kevin.w2v.win/api/1/elastalert/
+http_post_static_payload:
+    alert_message: 状态码为404的请求在过去5分钟内超过500！
+#alert_subject: 监控报警!!!
+alert_text: 状态码为404的请求在5分钟之内超过500！
+#alert_text_args:
+#- filter
+#- num_events
+#- timeframe
+

@@ -1,0 +1,39 @@
+name: Example Percentage Match
+type: percentage_match
+
+es_host: localhost
+es_port: 9200
+
+index: new-access
+description: "10% of all http requests with status code 404 in 5 minutes"
+#filter:
+#- term:
+#    status_code: "404"
+
+buffer_time:
+    minutes: 5
+
+#query_key: Hostname.keyword
+doc_type: doc
+
+match_bucket_filter:
+- term:
+    status_code: "404"
+
+max_percentage: 10
+#min_percentage
+#bucket_interval:
+#  minutes: 1
+
+#sync_bucket_interval: true
+#allow_buffer_time_overlap: true
+#use_run_every_query_size: true
+
+#(required)
+# The alert is use when a match is found
+alert:
+- "email"
+- "post"
+http_post_static_payload:
+    alert_message: 状态码为404的请求在过去5分钟内超过10%！
+alert_text: 状态码为404的请求在5分钟之内超过10%！
